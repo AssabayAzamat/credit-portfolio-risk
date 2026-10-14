@@ -1,0 +1,29 @@
+name: Verify risk report
+on: [push, pull_request]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: credit_risk
+          POSTGRES_USER: analyst
+          POSTGRES_PASSWORD: local_demo_only
+        ports: ["55432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U analyst -d credit_risk"
+          --health-interval 2s --health-timeout 3s --health-retries 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22', cache: npm}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      - run: python scripts/verify.py
+      - run: npm run check:specs
+      - name: Confirm committed dashboard JSON is reproducible
+        run: git diff --exit-code -- dashboard/data

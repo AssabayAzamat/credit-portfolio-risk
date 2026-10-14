@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Риск-сводка кредитного портфеля</title>
+  <link rel="icon" href="data:,">
+  <style>
+    :root { color-scheme: dark; --bg:#0b1523; --panel:#111f30; --line:#26394d; --text:#e7eff8; --muted:#91a6bd; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.55 "Segoe UI",Arial,sans-serif; }
+    main { max-width:1210px; margin:auto; padding:32px 36px 22px; }
+    .eyebrow { color:#79d5b2; font-size:11px; letter-spacing:2px; text-transform:uppercase; }
+    header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; gap:20px; }
+    h1 { margin:5px 0 4px; font-size:29px; font-weight:600; letter-spacing:-.5px; }
+    h2 { margin:0 0 8px; font-size:18px; font-weight:600; }
+    p { margin:0; }
+    .muted, footer { color:var(--muted); }
+    label { display:block; font-size:11px; color:var(--muted); margin-bottom:5px; }
+    select { border:1px solid #3f5871; background:#16283b; color:var(--text); font:14px "Segoe UI"; border-radius:6px; padding:9px 30px 9px 12px; }
+    .panel { padding:20px 24px 16px; margin:0 0 15px; border:1px solid var(--line); border-radius:10px; background:var(--panel); overflow-x:auto; }
+    .metrics { border-top:2px solid #6bc5ff; }
+    .caption { font-size:12px; color:var(--muted); margin-bottom:13px; }
+    .insights { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:20px; }
+    .insight { border-left:2px solid #476787; padding:4px 0 5px 14px; }
+    .insight strong { display:block; font-size:14px; margin-bottom:4px; color:#cfe5f6; }
+    .insight p { font-size:12px; color:var(--muted); }
+    .vega-embed { display:block; }
+    .vega-embed summary { color:var(--muted); }
+    #quality { border-top:1px solid var(--line); padding-top:13px; font-size:12px; }
+    #error { display:none; border:1px solid #ffb070; color:#ffb070; padding:14px; margin-bottom:16px; white-space:pre-wrap; }
+    footer { display:flex; justify-content:space-between; font-size:11px; margin-top:18px; gap:15px; }
+    a { color:#6bc5ff; }
+    @media(max-width:800px) {main {padding:20px 12px;} header {align-items:flex-start;flex-direction:column;} h1 {font-size:23px;} .insights{grid-template-columns:1fr;} .panel{padding:15px;} footer{display:block;} }
+  </style>
+  <script src="vendor/vega.min.js"></script>
+  <script src="vendor/vega-lite.min.js"></script>
+  <script src="vendor/vega-embed.min.js"></script>
+</head>
+<body>
+<main>
+  <header>
+    <div><div class="eyebrow">Кредитный риск / синтетические данные</div><h1>Риск-сводка портфеля</h1><p class="muted">Два месячных среза. Остатки в тенге по курсу на дату среза.</p></div>
+    <div><label for="snapshot">Дата метрик и топ-10</label><select id="snapshot"><option value="2026-09-01">01.09.2026</option><option value="2026-10-01" selected>01.10.2026</option></select></div>
+  </header>
+  <div id="error" role="alert"></div>
+  <section class="panel metrics"><div class="caption">Изменение к 01.09.2026. Для долей — процентные пункты, для сумм — проценты.</div><div id="metrics"></div></section>
+  <div class="caption">Выводы за месяц на 01.10.2026</div>
+  <div class="insights">
+    <div class="insight"><strong>NPL снижается на 1,84 п.п.</strong><p>На 01.10 доля NPL — 10,01%. Два среза не раскрывают причины изменения.</p></div>
+    <div class="insight"><strong>Провизии — 31,17 млрд ₸</strong><p>Снижение на 14,63% при сокращении портфеля на 2,71%.</p></div>
+    <div class="insight"><strong>Концентрация сохраняется</strong><p>Топ-10 групп: 17,02% портфеля. Изменение всего −0,03 п.п.</p></div>
+  </div>
+  <section class="panel"><h2>Динамика за месяц</h2><div class="caption">Линии соединяют только два наблюдения; промежуточных срезов нет.</div><div id="trend"></div></section>
+  <section class="panel"><h2>Отраслевой риск</h2><div class="caption">Оба среза. NPL рассчитывается внутри каждой отрасли. В подсказках — PAR30, PAR90 и вклад в общий NPL.</div><div id="sector"></div></section>
+  <section class="panel"><h2>Риск по программам</h2><div class="caption">Оба среза. Доли взвешены остатком задолженности, а не количеством кредитов.</div><div id="program"></div></section>
+  <section class="panel"><h2>Десять крупнейших групп</h2><div class="caption" id="top10-caption">Ранжирование по сумме остатков всех кредитов группы.</div><div id="top10"></div></section>
+  <div id="quality" class="muted"></div>
+  <footer><span>PAR30: &gt;30 дней · PAR90: &gt;90 дней · NPL: &gt;90 дней или реструктуризация</span><span>Списанные кредиты исключены. Провизии: 1% / 10% / 50% (NPL).</span></footer>
+</main>
+<script>
+  const views = {};
+  let quality, metrics;
+  async function showDate() {
+    const date = document.getElementById('snapshot').value;
+    await Promise.all(['metrics','top10'].map(name => views[name].signal('snapshot',date).runAsync()));
+    const q = quality.find(r=>r.report_date===date), m=metrics.find(r=>r.report_date===date);
+    document.getElementById('quality').textContent = `Контроль данных на ${date.split('-').reverse().join('.')}: ${q.raw_rows} исходных строк → ${q.unique_rows} уникальных кредитов; ${q.duplicates_removed} дублей удалено; ${q.written_off_rows} списанных исключено; ${q.active_rows} кредитов в портфеле.`;
+    const f = n => n.toLocaleString('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2});
+    document.getElementById('top10-caption').textContent = `На выбранную дату: ${f(m.top10_kzt/1e9)} млрд ₸, ${f(m.top10_ratio*100)}% портфеля. Группы ранжируются заново на каждый срез.`;
+  }
+  (async () => {
+    [quality,metrics] = await Promise.all(['quality','metrics'].map(async name=>{const r=await fetch(`data/${name}.json`);if(!r.ok)throw Error(r.status+' '+name);return r.json()}));
+    await Promise.all(['metrics','trend','sector','program','top10'].map(async name=>{
+      const result=await vegaEmbed('#'+name,`specs/${name}.json`,{renderer:'svg',actions:{export:true,source:true,compiled:false,editor:false}});
+      views[name]=result.view;
+    }));
+    await showDate();
+    document.getElementById('snapshot').addEventListener('change',()=>showDate().catch(fail));
+    document.documentElement.dataset.ready='true';
+  })().catch(fail);
+  function fail(error) {
+    console.error(error);
+    const node=document.getElementById('error');node.style.display='block';
+    node.textContent='Не удалось загрузить дашборд: '+error.message+'\nОткройте страницу через HTTP: python -m http.server 8000 --directory dashboard';
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,234 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Риск-сводка синтетического кредитного портфеля",
+  "data": {
+    "url": "data/segments.json"
+  },
+  "transform": [
+    {
+      "filter": "datum.dimension == 'program'"
+    },
+    {
+      "calculate": "datum.report_date == '2026-09-01' ? '01.09' : '01.10'",
+      "as": "date_label"
+    },
+    {
+      "calculate": "datum.portfolio_kzt / 1e9",
+      "as": "billions"
+    }
+  ],
+  "spacing": 35,
+  "hconcat": [
+    {
+      "title": "Портфель по программам",
+      "width": 305,
+      "height": 160,
+      "mark": {
+        "type": "bar",
+        "cornerRadiusEnd": 2
+      },
+      "encoding": {
+        "y": {
+          "field": "segment",
+          "type": "nominal",
+          "sort": {
+            "field": "portfolio_kzt",
+            "order": "descending",
+            "op": "sum"
+          },
+          "title": null,
+          "axis": {
+            "labelLimit": 240
+          }
+        },
+        "yOffset": {
+          "field": "date_label"
+        },
+        "x": {
+          "field": "billions",
+          "type": "quantitative",
+          "title": "млрд тенге"
+        },
+        "color": {
+          "field": "date_label",
+          "type": "nominal",
+          "scale": {
+            "domain": [
+              "01.09",
+              "01.10"
+            ],
+            "range": [
+              "#506c88",
+              "#6bc5ff"
+            ]
+          }
+        },
+        "tooltip": [
+          {
+            "field": "segment",
+            "title": "Сегмент"
+          },
+          {
+            "field": "date_label",
+            "title": "Дата"
+          },
+          {
+            "field": "portfolio_kzt",
+            "title": "Портфель, ₸",
+            "format": ",.2f"
+          },
+          {
+            "field": "portfolio_share",
+            "title": "Доля портфеля",
+            "format": ".2%"
+          },
+          {
+            "field": "par30_ratio",
+            "title": "PAR30",
+            "format": ".2%"
+          },
+          {
+            "field": "par90_ratio",
+            "title": "PAR90",
+            "format": ".2%"
+          },
+          {
+            "field": "npl_ratio",
+            "title": "NPL сегмента",
+            "format": ".2%"
+          },
+          {
+            "field": "npl_contribution",
+            "title": "NPL / весь портфель",
+            "format": ".2%"
+          }
+        ]
+      }
+    },
+    {
+      "title": "NPL внутри сегмента",
+      "width": 305,
+      "height": 160,
+      "mark": {
+        "type": "bar",
+        "cornerRadiusEnd": 2
+      },
+      "encoding": {
+        "y": {
+          "field": "segment",
+          "type": "nominal",
+          "sort": {
+            "field": "npl_ratio",
+            "order": "descending",
+            "op": "mean"
+          },
+          "title": null,
+          "axis": {
+            "labelLimit": 240
+          }
+        },
+        "yOffset": {
+          "field": "date_label"
+        },
+        "x": {
+          "field": "npl_ratio",
+          "type": "quantitative",
+          "title": "Доля портфеля сегмента",
+          "axis": {
+            "format": ".0%"
+          }
+        },
+        "color": {
+          "field": "date_label",
+          "type": "nominal",
+          "scale": {
+            "domain": [
+              "01.09",
+              "01.10"
+            ],
+            "range": [
+              "#7c6556",
+              "#ffb070"
+            ]
+          }
+        },
+        "tooltip": [
+          {
+            "field": "segment",
+            "title": "Сегмент"
+          },
+          {
+            "field": "date_label",
+            "title": "Дата"
+          },
+          {
+            "field": "portfolio_kzt",
+            "title": "Портфель, ₸",
+            "format": ",.2f"
+          },
+          {
+            "field": "portfolio_share",
+            "title": "Доля портфеля",
+            "format": ".2%"
+          },
+          {
+            "field": "par30_ratio",
+            "title": "PAR30",
+            "format": ".2%"
+          },
+          {
+            "field": "par90_ratio",
+            "title": "PAR90",
+            "format": ".2%"
+          },
+          {
+            "field": "npl_ratio",
+            "title": "NPL сегмента",
+            "format": ".2%"
+          },
+          {
+            "field": "npl_contribution",
+            "title": "NPL / весь портфель",
+            "format": ".2%"
+          }
+        ]
+      }
+    }
+  ],
+  "resolve": {
+    "scale": {
+      "color": "independent"
+    }
+  },
+  "config": {
+    "background": "transparent",
+    "font": "Segoe UI",
+    "view": {
+      "stroke": null
+    },
+    "axis": {
+      "labelColor": "#b9c9d9",
+      "titleColor": "#91a6bd",
+      "domain": false,
+      "tickColor": "#33485e",
+      "gridColor": "#24394f",
+      "labelFontSize": 12,
+      "titleFontSize": 12,
+      "titlePadding": 12,
+      "labelPadding": 8
+    },
+    "legend": {
+      "labelColor": "#b9c9d9",
+      "titleColor": "#91a6bd",
+      "labelFontSize": 12,
+      "orient": "top",
+      "title": null
+    },
+    "title": {
+      "color": "#e7eff8",
+      "fontSize": 15,
+      "anchor": "start",
+      "offset": 16
+    }
+  }
+}

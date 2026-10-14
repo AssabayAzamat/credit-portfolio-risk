@@ -1,0 +1,22 @@
+{
+  "name": "credit-portfolio-risk",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Synthetic credit risk reporting with PostgreSQL 16, YAML and Vega-Lite",
+  "scripts": {
+    "build": "node scripts/pipeline.mjs",
+    "test": "node tests/integration.mjs",
+    "check:specs": "node tests/specs.mjs",
+    "vendor": "node scripts/vendor.mjs"
+  },
+  "engines": {"node": ">=20"},
+  "dependencies": {
+    "pg": "8.16.3",
+    "pg-copy-streams": "7.0.0",
+    "vega": "5.33.0",
+    "vega-lite": "5.23.0",
+    "vega-embed": "6.29.0",
+    "yaml": "2.8.1"
+  }
+}

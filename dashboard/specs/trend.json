@@ -1,0 +1,219 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Риск-сводка синтетического кредитного портфеля",
+  "data": {
+    "url": "data/metrics.json"
+  },
+  "resolve": {
+    "scale": {
+      "color": "independent"
+    }
+  },
+  "transform": [
+    {
+      "calculate": "datum.report_date == '2026-09-01' ? '01.09.2026' : '01.10.2026'",
+      "as": "date_label"
+    }
+  ],
+  "spacing": 48,
+  "hconcat": [
+    {
+      "title": "Объём портфеля и провизии",
+      "width": 430,
+      "height": 165,
+      "transform": [
+        {
+          "fold": [
+            "portfolio_kzt",
+            "provisions_kzt"
+          ],
+          "as": [
+            "metric",
+            "amount"
+          ]
+        },
+        {
+          "calculate": "datum.metric == 'portfolio_kzt' ? 'Портфель' : 'Провизии'",
+          "as": "metric_label"
+        },
+        {
+          "calculate": "datum.amount / 1e9",
+          "as": "billions"
+        }
+      ],
+      "mark": {
+        "type": "bar",
+        "cornerRadiusTopLeft": 3,
+        "cornerRadiusTopRight": 3
+      },
+      "encoding": {
+        "x": {
+          "field": "date_label",
+          "type": "ordinal",
+          "sort": [
+            "01.09.2026",
+            "01.10.2026"
+          ],
+          "title": null,
+          "axis": {
+            "labelAngle": 0
+          }
+        },
+        "xOffset": {
+          "field": "metric_label"
+        },
+        "y": {
+          "field": "billions",
+          "type": "quantitative",
+          "title": "млрд тенге"
+        },
+        "color": {
+          "field": "metric_label",
+          "type": "nominal",
+          "scale": {
+            "domain": [
+              "Портфель",
+              "Провизии"
+            ],
+            "range": [
+              "#6bc5ff",
+              "#ffb070"
+            ]
+          }
+        },
+        "tooltip": [
+          {
+            "field": "date_label",
+            "title": "Дата"
+          },
+          {
+            "field": "metric_label",
+            "title": "Метрика"
+          },
+          {
+            "field": "billions",
+            "title": "млрд ₸",
+            "format": ".3f"
+          }
+        ]
+      }
+    },
+    {
+      "title": "Доли проблемной задолженности",
+      "width": 430,
+      "height": 165,
+      "transform": [
+        {
+          "fold": [
+            "par30_ratio",
+            "par90_ratio",
+            "npl_ratio"
+          ],
+          "as": [
+            "metric",
+            "ratio"
+          ]
+        },
+        {
+          "calculate": "datum.metric == 'par30_ratio' ? 'PAR30' : datum.metric == 'par90_ratio' ? 'PAR90' : 'NPL'",
+          "as": "metric_label"
+        }
+      ],
+      "mark": {
+        "type": "line",
+        "point": {
+          "filled": true,
+          "size": 65
+        },
+        "strokeWidth": 2.5
+      },
+      "encoding": {
+        "x": {
+          "field": "date_label",
+          "type": "ordinal",
+          "sort": [
+            "01.09.2026",
+            "01.10.2026"
+          ],
+          "title": null,
+          "axis": {
+            "labelAngle": 0
+          }
+        },
+        "y": {
+          "field": "ratio",
+          "type": "quantitative",
+          "title": "Доля портфеля",
+          "axis": {
+            "format": ".0%"
+          },
+          "scale": {
+            "zero": true
+          }
+        },
+        "color": {
+          "field": "metric_label",
+          "type": "nominal",
+          "scale": {
+            "domain": [
+              "PAR30",
+              "PAR90",
+              "NPL"
+            ],
+            "range": [
+              "#6bc5ff",
+              "#79d5b2",
+              "#ffb070"
+            ]
+          }
+        },
+        "tooltip": [
+          {
+            "field": "date_label",
+            "title": "Дата"
+          },
+          {
+            "field": "metric_label",
+            "title": "Метрика"
+          },
+          {
+            "field": "ratio",
+            "format": ".2%",
+            "title": "Доля"
+          }
+        ]
+      }
+    }
+  ],
+  "config": {
+    "background": "transparent",
+    "font": "Segoe UI",
+    "view": {
+      "stroke": null
+    },
+    "axis": {
+      "labelColor": "#b9c9d9",
+      "titleColor": "#91a6bd",
+      "domain": false,
+      "tickColor": "#33485e",
+      "gridColor": "#24394f",
+      "labelFontSize": 12,
+      "titleFontSize": 12,
+      "titlePadding": 12,
+      "labelPadding": 8
+    },
+    "legend": {
+      "labelColor": "#b9c9d9",
+      "titleColor": "#91a6bd",
+      "labelFontSize": 12,
+      "orient": "top",
+      "title": null
+    },
+    "title": {
+      "color": "#e7eff8",
+      "fontSize": 15,
+      "anchor": "start",
+      "offset": 16
+    }
+  }
+}

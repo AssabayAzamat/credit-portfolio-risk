@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "specs": [
+    "metrics.json",
+    "program.json",
+    "sector.json",
+    "top10.json",
+    "trend.json"
+  ],
+  "yaml_source_and_columns": "PASS"
+}

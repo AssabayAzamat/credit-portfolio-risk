@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "tests": [
+    "Second full pipeline run preserves exact metrics",
+    "Strict PAR boundaries and 50% NPL priority",
+    "Exact snapshot FX, native currency and written-off exclusion",
+    "Top-10 aggregates groups and resolves ties deterministically",
+    "Exact duplicate does not double count",
+    "Conflicting loan key is rejected",
+    "Missing snapshot FX is rejected",
+    "Conflicting FX key is rejected",
+    "Negative balance is rejected",
+    "Negative DPD is rejected",
+    "Invalid flag is rejected",
+    "Missing group_id is rejected",
+    "Zero denominator produces NULL, not a fabricated 0%"
+  ]
+}

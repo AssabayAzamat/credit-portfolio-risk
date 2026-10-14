@@ -1,0 +1,20 @@
+model: loan_risk
+source: reporting.v_loan_risk
+dimensions:
+  - {name: report_date, column: report_date, type: date, label: Дата среза}
+  - {name: loan_id, column: loan_id, type: string, label: Кредит}
+  - {name: borrower_id, column: borrower_id, type: string, label: Заёмщик}
+  - {name: group_id, column: group_id, type: string, label: Группа связанных заёмщиков}
+  - {name: sector, column: sector, type: string, label: Отрасль}
+  - {name: program, column: program, type: string, label: Программа}
+  - {name: currency, column: currency, type: string, label: Валюта кредита}
+  - {name: days_past_due, column: days_past_due, type: number, label: Дни просрочки}
+  - {name: restructured, column: restructured, type: number, label: Реструктуризация 0/1}
+  - {name: risk_band, column: risk_band, type: string, label: Категория риска}
+measures:
+  - {name: portfolio_kzt, column: balance_kzt, type: sum, format: '#,##0.00', label: Портфель в тенге}
+  - {name: par30_kzt, column: par30_kzt, type: sum, format: '#,##0.00', label: Остаток PAR30 в тенге}
+  - {name: par90_kzt, column: par90_kzt, type: sum, format: '#,##0.00', label: Остаток PAR90 в тенге}
+  - {name: npl_kzt, column: npl_kzt, type: sum, format: '#,##0.00', label: Остаток NPL в тенге}
+  - {name: provisions_kzt, column: provisions_kzt, type: sum, format: '#,##0.00', label: Провизии в тенге}
+  - {name: loan_count, column: loan_id, type: count, format: '#,##0', label: Количество кредитов}

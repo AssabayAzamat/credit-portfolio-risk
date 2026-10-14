@@ -1,0 +1,496 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Риск-сводка синтетического кредитного портфеля",
+  "data": {
+    "url": "data/metrics.json"
+  },
+  "params": [
+    {
+      "name": "snapshot",
+      "value": "2026-10-01"
+    }
+  ],
+  "transform": [
+    {
+      "filter": "datum.report_date == snapshot"
+    }
+  ],
+  "hconcat": [
+    {
+      "width": 158,
+      "height": 96,
+      "transform": [
+        {
+          "calculate": "format(datum.portfolio_kzt / 1e9, '.2f') + ' млрд ₸'",
+          "as": "display"
+        },
+        {
+          "calculate": "'Δ ' + format(datum.portfolio_delta_ratio, '+.2%') + ' к 01.09'",
+          "as": "delta"
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "fontSize": 13,
+            "color": "#91a6bd"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 12
+            },
+            "text": {
+              "value": "Портфель"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "fontSize": 24,
+            "fontWeight": 600,
+            "color": "#f0f5fb"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 47
+            },
+            "text": {
+              "field": "display"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "fontSize": 12,
+            "color": "#79d5b2"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 80
+            },
+            "text": {
+              "field": "delta"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "width": 158,
+      "height": 96,
+      "transform": [
+        {
+          "calculate": "datum.par30_ratio == null ? 'н/д' : format(datum.par30_ratio, '.2%')",
+          "as": "display"
+        },
+        {
+          "calculate": "'Δ ' + format(datum.par30_delta_pp, '+.2f') + ' п.п.'",
+          "as": "delta"
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "fontSize": 13,
+            "color": "#91a6bd"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 12
+            },
+            "text": {
+              "value": "PAR30"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "fontSize": 24,
+            "fontWeight": 600,
+            "color": "#ffb070"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 47
+            },
+            "text": {
+              "field": "display"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "fontSize": 12,
+            "color": "#79d5b2"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 80
+            },
+            "text": {
+              "field": "delta"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "width": 158,
+      "height": 96,
+      "transform": [
+        {
+          "calculate": "datum.par90_ratio == null ? 'н/д' : format(datum.par90_ratio, '.2%')",
+          "as": "display"
+        },
+        {
+          "calculate": "'Δ ' + format(datum.par90_delta_pp, '+.2f') + ' п.п.'",
+          "as": "delta"
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "fontSize": 13,
+            "color": "#91a6bd"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 12
+            },
+            "text": {
+              "value": "PAR90"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "fontSize": 24,
+            "fontWeight": 600,
+            "color": "#ffb070"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 47
+            },
+            "text": {
+              "field": "display"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "fontSize": 12,
+            "color": "#79d5b2"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 80
+            },
+            "text": {
+              "field": "delta"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "width": 158,
+      "height": 96,
+      "transform": [
+        {
+          "calculate": "datum.npl_ratio == null ? 'н/д' : format(datum.npl_ratio, '.2%')",
+          "as": "display"
+        },
+        {
+          "calculate": "'Δ ' + format(datum.npl_delta_pp, '+.2f') + ' п.п.'",
+          "as": "delta"
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "fontSize": 13,
+            "color": "#91a6bd"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 12
+            },
+            "text": {
+              "value": "NPL"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "fontSize": 24,
+            "fontWeight": 600,
+            "color": "#ffb070"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 47
+            },
+            "text": {
+              "field": "display"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "fontSize": 12,
+            "color": "#79d5b2"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 80
+            },
+            "text": {
+              "field": "delta"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "width": 158,
+      "height": 96,
+      "transform": [
+        {
+          "calculate": "format(datum.provisions_kzt / 1e9, '.2f') + ' млрд ₸'",
+          "as": "display"
+        },
+        {
+          "calculate": "'Δ ' + format(datum.provisions_delta_ratio, '+.2%') + ' к 01.09'",
+          "as": "delta"
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "fontSize": 13,
+            "color": "#91a6bd"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 12
+            },
+            "text": {
+              "value": "Провизии"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "fontSize": 24,
+            "fontWeight": 600,
+            "color": "#f0f5fb"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 47
+            },
+            "text": {
+              "field": "display"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "fontSize": 12,
+            "color": "#79d5b2"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 80
+            },
+            "text": {
+              "field": "delta"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "width": 158,
+      "height": 96,
+      "transform": [
+        {
+          "calculate": "datum.top10_ratio == null ? 'н/д' : format(datum.top10_ratio, '.2%')",
+          "as": "display"
+        },
+        {
+          "calculate": "'Δ ' + format(datum.top10_delta_pp, '+.2f') + ' п.п.'",
+          "as": "delta"
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "fontSize": 13,
+            "color": "#91a6bd"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 12
+            },
+            "text": {
+              "value": "Топ-10 групп"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "fontSize": 24,
+            "fontWeight": 600,
+            "color": "#f0f5fb"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 47
+            },
+            "text": {
+              "field": "display"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "fontSize": 12,
+            "color": "#79d5b2"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 80
+            },
+            "text": {
+              "field": "delta"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "spacing": 18,
+  "config": {
+    "background": "transparent",
+    "font": "Segoe UI",
+    "view": {
+      "stroke": null
+    },
+    "axis": {
+      "labelColor": "#b9c9d9",
+      "titleColor": "#91a6bd",
+      "domain": false,
+      "tickColor": "#33485e",
+      "gridColor": "#24394f",
+      "labelFontSize": 12,
+      "titleFontSize": 12,
+      "titlePadding": 12,
+      "labelPadding": 8
+    },
+    "legend": {
+      "labelColor": "#b9c9d9",
+      "titleColor": "#91a6bd",
+      "labelFontSize": 12,
+      "orient": "top",
+      "title": null
+    },
+    "title": {
+      "color": "#e7eff8",
+      "fontSize": 15,
+      "anchor": "start",
+      "offset": 16
+    }
+  }
+}

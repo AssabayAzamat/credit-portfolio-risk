@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16
+    container_name: credit-risk-db
+    environment:
+      POSTGRES_DB: credit_risk
+      POSTGRES_USER: analyst
+      POSTGRES_PASSWORD: local_demo_only
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - .:/project:ro
+    working_dir: /project
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U analyst -d credit_risk"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+volumes:
+  pgdata:

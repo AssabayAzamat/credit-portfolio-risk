@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "browser": "Codex in-app browser",
+  "dates_tested": [
+    "2026-09-01",
+    "2026-10-01"
+  ],
+  "geometry": {
+    "charts": [
+      {
+        "scroll": 1136,
+        "width": 1136
+      },
+      {
+        "scroll": 1136,
+        "width": 1136
+      },
+      {
+        "scroll": 1136,
+        "width": 1136
+      },
+      {
+        "scroll": 1136,
+        "width": 1136
+      },
+      {
+        "scroll": 1136,
+        "width": 1136
+      }
+    ],
+    "page": 1265,
+    "svg_count": 5,
+    "width": 1280
+  },
+  "mobile": {
+    "viewport": 390,
+    "page": 375
+  },
+  "warnings_and_errors": []
+}

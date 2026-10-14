@@ -1,0 +1,95 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Риск-сводка синтетического кредитного портфеля",
+  "data": {
+    "url": "data/groups.json"
+  },
+  "params": [
+    {
+      "name": "snapshot",
+      "value": "2026-10-01"
+    }
+  ],
+  "transform": [
+    {
+      "filter": "datum.report_date == snapshot && datum.group_rank <= 10"
+    },
+    {
+      "calculate": "datum.balance_kzt / 1e9",
+      "as": "billions"
+    }
+  ],
+  "width": 930,
+  "height": 200,
+  "mark": {
+    "type": "bar",
+    "cornerRadiusEnd": 2,
+    "color": "#6bc5ff"
+  },
+  "encoding": {
+    "y": {
+      "field": "group_id",
+      "type": "nominal",
+      "sort": {
+        "field": "group_rank",
+        "order": "ascending"
+      },
+      "title": null
+    },
+    "x": {
+      "field": "billions",
+      "type": "quantitative",
+      "title": "млрд тенге"
+    },
+    "tooltip": [
+      {
+        "field": "group_id",
+        "title": "Группа"
+      },
+      {
+        "field": "group_rank",
+        "title": "Место"
+      },
+      {
+        "field": "billions",
+        "format": ".3f",
+        "title": "Остаток, млрд ₸"
+      },
+      {
+        "field": "loan_count",
+        "title": "Кредиты"
+      }
+    ]
+  },
+  "config": {
+    "background": "transparent",
+    "font": "Segoe UI",
+    "view": {
+      "stroke": null
+    },
+    "axis": {
+      "labelColor": "#b9c9d9",
+      "titleColor": "#91a6bd",
+      "domain": false,
+      "tickColor": "#33485e",
+      "gridColor": "#24394f",
+      "labelFontSize": 12,
+      "titleFontSize": 12,
+      "titlePadding": 12,
+      "labelPadding": 8
+    },
+    "legend": {
+      "labelColor": "#b9c9d9",
+      "titleColor": "#91a6bd",
+      "labelFontSize": 12,
+      "orient": "top",
+      "title": null
+    },
+    "title": {
+      "color": "#e7eff8",
+      "fontSize": 15,
+      "anchor": "start",
+      "offset": 16
+    }
+  }
+}
